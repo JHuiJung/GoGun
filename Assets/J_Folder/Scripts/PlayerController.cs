@@ -13,15 +13,18 @@ public class PlayerController : MonoBehaviour
     float vAxis;
     
     int jumpCnt = 0;
+    float re_jumpForce;
     bool isRun;
     bool isSpace;
     bool isSprint;
+    bool isUpSpace;
     bool isGround = true;
     Vector3 moveVec;
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        re_jumpForce = jumpForce;
         animator = this.GetComponent<Animator>();
         
     }
@@ -48,7 +51,8 @@ public class PlayerController : MonoBehaviour
         // 방향키 값을 입력 받아 
         hAxis = Input.GetAxis("Horizontal");
         vAxis = Input.GetAxis("Vertical");
-        isSpace = Input.GetAxisRaw("Jump") != 0 ? true : false;
+        isSpace = Input.GetButtonDown("Jump");
+        isUpSpace = Input.GetButtonUp("Jump");
         isSprint = Input.GetAxisRaw("Run") != 0 ? true : false;
         moveVec = new Vector3(hAxis, 0,vAxis).normalized;
         isRun = moveVec != Vector3.zero ? true : false;
@@ -56,46 +60,54 @@ public class PlayerController : MonoBehaviour
     }
     void player_state()
     {
-        
+
+        if (isGround)
+        {
+            animator.SetBool("isRun", isRun);
+            if (isRun) { animator.SetBool("isSprint", isSprint);  }
+            
+           
+        }
+        else
+        {
+            animator.SetBool("isRun", isRun);
+        }
         
         
     }
     void player_Move()
     {
 
-        if (isRun && !isSprint)
-        {
-            transform.position += moveVec * player_speed * Time.deltaTime;
-            view_speed = player_speed;
-            animator.SetBool("isRun", isRun);
-
-        }
-        else if (isSprint && isRun)
+       
+        if (isSprint && isRun)
         {
             transform.position += moveVec * 2f * player_speed * Time.deltaTime;
             view_speed = player_speed*2;
-            animator.SetBool("isSprint", isSprint);
+        }
+        else if(!isSprint && isRun)
+        {
+            transform.position += moveVec * player_speed * Time.deltaTime;
+            view_speed = player_speed;
         }
 
-        if (isGround)
-        {
-            animator.SetBool("isGround", isGround);
-        }
         
         
         
     }
     void Jump()
     {
-
-        if (Input.GetKeyDown(KeyCode.Space) && jumpCnt < 2)
+        Debug.Log(jumpCnt);
+        if (isSpace && jumpCnt < 2)
         {
             jumpCnt++;
-            Debug.Log("점프 누름 :" + jumpCnt.ToString());
-            isGround = false;
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            animator.SetBool("isGround", isGround);
 
+            isGround = false;
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
+
+        }
+        else if (isUpSpace)
+        {
+            rb.velocity *= 0.5f;
         }
         
         
@@ -106,7 +118,7 @@ public class PlayerController : MonoBehaviour
         {
             isGround = true;  // 땅에 닿으면 isGrounded를 true로 설정
             jumpCnt = 0;  // 점프 횟수 초기화
-
+            jumpForce = re_jumpForce;
         }
     }
 }
