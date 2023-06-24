@@ -96,7 +96,6 @@ public class PlayerController : MonoBehaviour
     }
     void Jump()
     {
-        Debug.Log(jumpCnt);
         if (isSpace && jumpCnt < 2)
         {
             jumpCnt++;
