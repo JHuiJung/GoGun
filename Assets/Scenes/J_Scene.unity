@@ -2321,8 +2321,8 @@ MonoBehaviour:
   score_Txt: {fileID: 129993331}
   time_Txt: {fileID: 1597706484}
   stage_Txt: {fileID: 1520835539}
-  restTime: 2
-  stage_time: 15
+  restTime: 5
+  stage_time: 30
   score: 0
   score_coin: 0
   score_time: 0

@@ -9,4 +9,5 @@ public class LoadScene : MonoBehaviour
     {
         SceneManager.LoadScene("J_Scene");
     }
+
 }
