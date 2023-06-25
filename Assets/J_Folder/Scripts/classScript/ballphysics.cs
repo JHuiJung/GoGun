@@ -10,6 +10,8 @@ public class ballphysics : MonoBehaviour
     public float damping = 0.1f;
     public float mass = 1.0f;
     public float dt = 0.02f;
+    public float shoot_power = 1000f;
+    public Vector3 goVector = Vector3.zero;
 
     public Vector3 vel;
     public Vector3 force;
@@ -21,9 +23,10 @@ public class ballphysics : MonoBehaviour
     {
         Ground = GameObject.FindGameObjectWithTag("Ground");
         ground_y = Ground.transform.position.y;
-        AddForce(Vector3.forward * -1*50f);
-        Rigidbody rb = this.GetComponent<Rigidbody>();
-        
+        goVector = goVector.normalized;
+        AddForce(goVector * shoot_power);
+        Destroy(gameObject, 10.2f);
+
     }
 
     // Update is called once per frame
@@ -70,5 +73,15 @@ public class ballphysics : MonoBehaviour
     {
         Vector3 scales = this.transform.localScale;
         return Mathf.Max(scales.x, scales.y, scales.z)/2.0f;
+    }
+
+    public void Destroy_TimeDone()
+    {
+        Destroy(gameObject);
+    }
+
+    public void Change_dt(float d)
+    {
+        this.dt = d;
     }
 }

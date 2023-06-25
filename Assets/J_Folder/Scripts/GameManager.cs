@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     // Start is called before the first frame update
     public static GameManager instance;
+    public GameObject Victory_obj;
     public Text score_Txt;
     public Text time_Txt;
     public Text stage_Txt;
@@ -22,6 +24,8 @@ public class GameManager : MonoBehaviour
     public int score_Obj = 0;
 
     public int stageLevel = 0;
+
+    float dt = 0.02f;
     private void Awake()
     {
         if(instance == null)
@@ -45,6 +49,10 @@ public class GameManager : MonoBehaviour
     {
         UpdateText();
         UpdateTime();
+        if(stageLevel == 4 && isRestTime)
+        {
+            Victory();
+        }
     }
     void UpdateText()
     {
@@ -76,7 +84,7 @@ public class GameManager : MonoBehaviour
     }
     void UpdateTime()
     {
-        one_sec += Time.deltaTime;
+        one_sec += dt*50*Time.deltaTime;
         if(one_sec >= 1)
         {
             now_time -= 1;
@@ -110,10 +118,34 @@ public class GameManager : MonoBehaviour
         return isRestTime;
     }
 
+    public int get_Stage_Level()
+    {
+        return stageLevel;
+    }
+    public void set_dt(float d)
+    {
+        this.dt = d;
+    }
+    public float get_dt()
+    {
+        return dt;
+    }
+    public bool get_isGameOver()
+    {
+        return isGameOver;
+    }
+
     public void GameOver()
     {
         isGameOver = true;
         Debug.Log("게임오버");
+        SceneManager.LoadScene("Fail");
 
+    }
+    public void Victory()
+    {
+        isGameOver = true;
+        Victory_obj.SetActive(true);
+        Victory_obj.GetComponent<Victory>().set_text(score_time,score_coin,score);
     }
 }

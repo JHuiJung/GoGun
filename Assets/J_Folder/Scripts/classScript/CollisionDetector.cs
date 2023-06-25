@@ -14,8 +14,8 @@ public class CollisionDetector : MonoBehaviour
     void Start()
     {
         //충돌검사할 물체 받아오기
-        balls = GameObject.FindGameObjectsWithTag("Ball");
-        walls = GameObject.FindGameObjectsWithTag("Wall");
+        balls = GameObject.FindGameObjectsWithTag("Attack");
+        //walls = GameObject.FindGameObjectsWithTag("Wall");
     }
 
     // Update is called once per frame
@@ -27,13 +27,13 @@ public class CollisionDetector : MonoBehaviour
             Vector3 pos = balls[i].transform.position;
             float depth = pos.y-radius;
 
-            //벽과 충돌검사
+            /*벽과 충돌검사
             if(depth<-0.05f)
             {
                 pos.y=radius;
                 //balls[i].transform.position = pos;    
                 balls[i].GetComponent<ballphysics>().AddForce(new Vector3(0,-depth*stiffness,0));
-            }
+            }*/
             
             //공과 공 사이 충돌검사
             for(int j=i+1;j<balls.Length;j++)

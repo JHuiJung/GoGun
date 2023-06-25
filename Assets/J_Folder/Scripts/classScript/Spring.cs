@@ -30,26 +30,42 @@ public class Spring : MonoBehaviour
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.startColor = Color.red;
         lineRenderer.endColor = Color.red;
+
+        Destroy(gameObject, 10f);
     }
 
     void FixedUpdate() {
         // 두 강체 간의 거리를 계산
-        Vector3 connectionVector = ball2.transform.position - ball1.transform.position;
-        currentLength = connectionVector.magnitude;
+        bool isRestTime = GameManager.instance.getIsRestTime();
 
-        // 스프링이 원래 길이보다 늘어난 정도를 계산
-        float displacement = currentLength - restLength;
+        if (!isRestTime)
+        {
+            Vector3 connectionVector = ball2.transform.position - ball1.transform.position;
+            currentLength = connectionVector.magnitude;
 
-        // 힘의 크기를 계산
-        float springForceMagnitude = displacement * springConstant;
+            // 스프링이 원래 길이보다 늘어난 정도를 계산
+            float displacement = currentLength - restLength;
 
-        // 각각의 강체에 힘을 적용
-        Vector3 springForce = connectionVector.normalized * springForceMagnitude;
-        connectedBody1.AddForce(springForce);
-        connectedBody2.AddForce(-springForce);
+            // 힘의 크기를 계산
+            float springForceMagnitude = displacement * springConstant;
 
-        //그리기 위한 정보 전달
-        lineRenderer.SetPosition(0, ball1.transform.position);
-        lineRenderer.SetPosition(1, ball2.transform.position);
+            // 각각의 강체에 힘을 적용
+            Vector3 springForce = connectionVector.normalized * springForceMagnitude;
+            connectedBody1.AddForce(springForce);
+            connectedBody2.AddForce(-springForce);
+
+            //그리기 위한 정보 전달
+            lineRenderer.SetPosition(0, ball1.transform.position);
+            lineRenderer.SetPosition(1, ball2.transform.position);
+        }
+        
+    }
+
+    private void Update()
+    {
+        if(ball1 == null || ball2 == null)
+        {
+            Destroy(gameObject);
+        }
     }
 }
